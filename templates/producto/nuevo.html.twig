@@ -2,6 +2,17 @@
 
 {% block body %}
 <h1>Registrar Producto</h1>
+
+{# Mostrar los mensajes flash con Bootstrap #}
+{% for label, messages in app.flashes %}
+    <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endfor %}
+
 <form method="post">
     {{ form_start(form) }}
     {{ form_row(form.claveProducto) }}

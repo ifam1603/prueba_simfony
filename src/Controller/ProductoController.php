@@ -28,19 +28,35 @@ class ProductoController extends AbstractController
     #[Route('/producto/nuevo', name: 'producto_nuevo', methods: ['GET', 'POST'])]
     public function nuevo(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $producto = new Producto();  // Crear una nueva instancia de Producto
-        $form = $this->createForm(ProductoType::class, $producto);  // Suponiendo que tienes un formulario ProductoType
-
-        $form->handleRequest($request);  // Manejar la solicitud del formulario
-
+        $producto = new Producto();
+        $form = $this->createForm(ProductoType::class, $producto);
+        $form->handleRequest($request);
+    
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($producto);  // Guardar el producto en la base de datos
-            $entityManager->flush();
-
-            // Redirigir a otra página (por ejemplo, a la lista de productos)
-            return $this->redirectToRoute('producto_index');
+            try {
+                // Llamar al procedimiento almacenado
+                $connection = $entityManager->getConnection();
+                $query = 'CALL InsertarProducto(:clave_producto, :nombre, :precio)';
+                $stmt = $connection->prepare($query);
+                $stmt->executeQuery([
+                    'clave_producto' => $producto->getClaveProducto(),
+                    'nombre' => $producto->getNombre(),
+                    'precio' => $producto->getPrecio(),
+                ]);
+            
+                $this->addFlash('success', 'Producto insertado correctamente.');
+                return $this->redirectToRoute('producto_index');
+            } catch (\Doctrine\DBAL\Exception $e) {
+                // Verificar si es el error del procedimiento almacenado
+                if (str_contains($e->getMessage(), 'La clave del producto ya existe')) {
+                    $this->addFlash('danger', 'La clave del producto ya existe.');
+                } else {
+                    // Otros errores
+                    $this->addFlash('danger', 'Ocurrió un error al insertar el producto.');
+                }
+            }
         }
-
+    
         return $this->render('producto/nuevo.html.twig', [
             'form' => $form->createView(),
         ]);
