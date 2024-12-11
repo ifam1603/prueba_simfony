@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Registrar Producto</h1>
+<form method="post">
+    {{ form_start(form) }}
+    {{ form_row(form.claveProducto) }}
+    {{ form_row(form.nombre) }}
+    {{ form_row(form.precio) }}
+    <button type="submit" class="btn btn-success">Registrar</button>
+    {{ form_end(form) }}
+</form>
+
+<a href="{{ path('producto_index') }}" class="btn btn-secondary">Volver</a>
+{% endblock %}

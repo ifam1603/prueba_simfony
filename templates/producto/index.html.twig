@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Productos</h1>
+
+<table id="productos" class="display">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Clave</th>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for producto in productos %}
+        <tr>
+            <td>{{ producto.getId }}</td>
+            <td>{{ producto.getClaveProducto }}</td>
+            <td>{{ producto.getNombre }}</td>
+            <td>{{ producto.getPrecio }}</td>
+            <td>
+                <a href="{{ path('producto_editar', { id: producto.getId }) }}" class="btn btn-warning btn-sm">Editar</a>
+                <form method="post" action="{{ path('producto_borrar', { id: producto.getId }) }}" style="display:inline-block;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este producto?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('borrar' ~ producto.getId) }}">
+                    <button class="btn btn-danger btn-sm">Borrar</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{{ path('producto_nuevo') }}" class="btn btn-primary">Registrar Producto</a>
+<a href="{{ path('producto_exportar') }}" class="btn btn-success">Exportar a Excel</a>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        $('#productos').DataTable();
+    });
+</script>
+{% endblock %}
