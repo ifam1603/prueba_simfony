@@ -1,0 +1,31 @@
+drop database Prueba;
+
+create database Prueba;
+USE Prueba;
+
+drop table Producto;
+
+CREATE TABLE Producto (
+    Id_producto INT AUTO_INCREMENT PRIMARY KEY,
+    clave_producto VARCHAR(50) UNIQUE NOT NULL,
+    Nombre VARCHAR(100) NOT NULL,
+    Precio DECIMAL(10, 2) NOT NULL
+);
+
+DELIMITER $$
+
+CREATE PROCEDURE InsertarProducto (
+    IN p_clave_producto VARCHAR(50),
+    IN p_nombre VARCHAR(100),
+    IN p_precio DECIMAL(10, 2)
+)
+BEGIN
+    -- Verificar si la clave ya existe
+    IF EXISTS (SELECT 1 FROM Producto WHERE clave_producto = p_clave_producto) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'La clave del producto ya existe.';
+    ELSE
+        INSERT INTO Producto (clave_producto, Nombre, Precio)
+        VALUES (p_clave_producto, p_nombre, p_precio);
+    END IF;
+END$$

@@ -2,14 +2,35 @@
 
 {% block body %}
 <h1>Editar Producto</h1>
-<form method="post">
-    {{ form_start(form) }}
-    {{ form_row(form.claveProducto) }}
-    {{ form_row(form.nombre) }}
-    {{ form_row(form.precio) }}
-    <button type="submit" class="btn btn-primary">Guardar</button>
-    {{ form_end(form) }}
-</form>
+<div class="card shadow-sm">
+        <div class="card-body">
+            <form method="post">
+                {{ form_start(form) }}
 
-<a href="{{ path('producto_index') }}" class="btn btn-secondary">Cancelar</a>
+                <div class="mb-3">
+                    {{ form_label(form.claveProducto, 'Clave del Producto', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.claveProducto, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.claveProducto) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.nombre, 'Nombre', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.nombre, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.nombre) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.precio, 'Precio', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.precio, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.precio) }}
+                </div>
+
+                <button type="submit" class="btn btn-success">Registrar</button>
+                {{ form_end(form) }}
+            </form>
+
+            <a href="{{ path('producto_index') }}" class="btn btn-secondary mt-3">Volver</a>
+        </div>
+    </div>
+</div>
 {% endblock %}
